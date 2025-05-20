@@ -192,7 +192,7 @@ EasyHttpGet.doRequest<User>(
 
 ## 许可证
 
-[许可证信息]
+[MIT License](./LICENSE)
 
 ## 贡献
 
