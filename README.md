@@ -1,23 +1,25 @@
+### English | [中文](README-zh.md)
+
 # Easy Requester
 
-Easy Requester 是一个轻量级的 Kotlin HTTP 客户端库，它基于 OkHttp 构建，提供了简单易用的 API 来发送 HTTP 请求。
+Easy Requester is a lightweight Kotlin HTTP client library built on OkHttp, providing a simple and easy-to-use API for sending HTTP requests.
 
-## 特性
+## Features
 
-- 简洁的 API 设计，易于使用
-- 支持同步 HTTP 请求
-- 支持自定义请求参数、头信息和 Cookie
-- 支持自动序列化和反序列化 JSON 数据（使用 Jackson）
-- 支持 Kotlin 数据类的自动映射
-- 支持自定义响应处理和异常处理
-- 使用链式调用风格的 Builder 模式
-- 使用 Kotlin 高阶函数的函数式编程模式
+- Clean API design, easy to use
+- Support for synchronous HTTP requests
+- Custom request parameters, headers, and cookies
+- Automatic serialization and deserialization of JSON data (using Jackson)
+- Automatic mapping for Kotlin data classes
+- Custom response and exception handling
+- Builder pattern with fluent interface
+- Functional programming style with Kotlin higher-order functions
 
-## 安装
+## Installation
 
 ### Maven
 
-在你的 `pom.xml` 文件中添加以下依赖：
+Add the following dependency to your `pom.xml` file:
 
 ```xml
 <dependency>
@@ -26,40 +28,42 @@ Easy Requester 是一个轻量级的 Kotlin HTTP 客户端库，它基于 OkHttp
     <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
+Note: This project is currently in SNAPSHOT and has not been published to the central repository. 
+It will be published with the official release.
 
-## 快速开始
+## Quick Start
 
-### 基本用法
+### Basic Usage
 
 ```kotlin
-// 最简单的方式 - 返回字符串
+// Simplest way - returns a string
 EasyHttpGet.doRequestDefault(url = "https://api.example.com") { response ->
-    println("响应内容: $response")
+    println("Response content: $response")
 }
 
-// 使用数据类接收响应
+// Using a data class to receive the response
 data class User(val id: Int, val name: String)
 
 EasyHttpGet.doRequest<User>(url = "https://api.example.com/users/1") { user ->
-    println("用户名: ${user?.name}")
+    println("Username: ${user?.name}")
 }
 ```
 
-### 添加请求参数
+### Adding Request Parameters
 
 ```kotlin
-// 添加查询参数
+// Adding query parameters
 val params = mapOf("page" to "1", "limit" to "10")
 
 EasyHttpGet.doRequest<User>(
     url = "https://api.example.com/users",
     params = params
 ) { users ->
-    println("获取到 ${users?.size} 个用户")
+    println("Retrieved ${users?.size} users")
 }
 ```
 
-### 添加请求头和 Cookie
+### Adding Headers and Cookies
 
 ```kotlin
 val headers = mapOf("Authorization" to "Bearer token123")
@@ -70,99 +74,99 @@ EasyHttpGet.doRequest<User>(
     headers = headers,
     cookies = cookies
 ) { user ->
-    println("用户信息: $user")
+    println("User info: $user")
 }
 ```
 
-### 自定义异常处理
+### Custom Exception Handling
 
 ```kotlin
 EasyHttpGet.doRequest<User>(
     url = "https://api.example.com/users/1",
     exceptionHandler = { throwable, request ->
-        println("请求失败: ${request.url}, 错误: ${throwable?.message}")
-        // 在这里处理异常，例如重试或记录日志
+        println("Request failed: ${request.url}, Error: ${throwable?.message}")
+        // Handle exceptions here, e.g., retry or log
     }
 ) { user ->
-    println("用户信息: $user")
+    println("User info: $user")
 }
 ```
 
-### 处理原始响应
+### Handling Raw Responses
 
 ```kotlin
 EasyHttpGet.doRequestRaw(url = "https://api.example.com") { response ->
-    println("状态码: ${response.code}")
-    println("响应头: ${response.headers}")
-    println("响应体: ${response.body?.string()}")
+    println("Status code: ${response.code}")
+    println("Headers: ${response.headers}")
+    println("Body: ${response.body?.string()}")
 }
 ```
 
-### 使用 Builder 模式
+### Using the Builder Pattern
 
 ```kotlin
-// 使用 Class 指定返回类型
+// Using Class to specify return type
 EasyHttpGet
     .Builder(User::class.java)
     .setUrl("https://api.example.com/users/1")
     .setHeaders(mapOf("Authorization" to "Bearer token123"))
     .onSuccess { user ->
-        println("用户名: ${user?.name}")
+        println("Username: ${user?.name}")
     }
     .onException { throwable, request ->
-        println("请求失败: ${throwable.message}")
+        println("Request failed: ${throwable.message}")
     }
     .build()
     .execute()
 
-// 使用 TypeReference 处理泛型类型
+// Using TypeReference to handle generic types
 EasyHttpGet
     .Builder(object : TypeReference<List<User>>() {})
     .setUrl("https://api.example.com/users")
     .setParams(mapOf("page" to "1"))
     .onSuccess { users ->
-        println("用户列表: $users")
+        println("User list: $users")
     }
     .build()
     .execute()
 ```
 
-### 自定义 ObjectMapper
+### Custom ObjectMapper
 
 ```kotlin
 val objectMapper = ObjectMapper().registerKotlinModule()
-// 可以在这里配置 ObjectMapper，例如日期格式、序列化选项等
+// Configure ObjectMapper here, e.g., date format, serialization options, etc.
 
 EasyHttpGet.doRequest<User>(
     url = "https://api.example.com/users/1",
     objectMapper = objectMapper
 ) { user ->
-    println("用户信息: $user")
+    println("User info: $user")
 }
 ```
 
-## 高级用法
+## Advanced Usage
 
-### 自定义响应处理
+### Custom Response Handling
 
 ```kotlin
 EasyHttpGet.doRequest<User>(
     url = "https://api.example.com/users/1",
     responseSuccessHandler = { response ->
-        // 处理成功的响应
-        println("成功: ${response.code}")
-        // 可以在这里执行自定义逻辑，例如提取特定的头信息
+        // Handle successful responses
+        println("Success: ${response.code}")
+        // Execute custom logic here, e.g., extract specific headers
     },
     responseFailureHandler = { response ->
-        // 处理失败的响应
-        println("失败: ${response.code} - ${response.message}")
+        // Handle failed responses
+        println("Failure: ${response.code} - ${response.message}")
     }
 ) { user ->
-    println("用户信息: $user")
+    println("User info: $user")
 }
 ```
 
-### 自定义 OkHttpClient
+### Custom OkHttpClient
 
 ```kotlin
 val okHttpClient = OkHttpClient.Builder()
@@ -175,25 +179,25 @@ EasyHttpGet.doRequest<User>(
     url = "https://api.example.com/users/1",
     okHttpClient = okHttpClient
 ) { user ->
-    println("用户信息: $user")
+    println("User info: $user")
 }
 ```
 
-## 注意事项
+## Notes
 
-1. 当处理 Kotlin 数据类时，请确保使用带有 Kotlin 模块的 ObjectMapper：
+1. When handling Kotlin data classes, ensure you use an ObjectMapper with the Kotlin module:
    ```kotlin
    ObjectMapper().registerKotlinModule()
    ```
 
-2. 默认情况下，库会自动检测是否需要 Kotlin 模块，但在某些情况下可能需要手动指定。
+2. By default, the library automatically detects if the Kotlin module is needed, but in some cases, you may need to specify it manually.
 
-3. 所有请求都是同步的，如果需要异步操作，请考虑在协程或线程中执行。
+3. All requests are synchronous. If you need asynchronous operations, consider executing them in coroutines or threads.
 
-## 许可证
+## License
 
 [MIT License](./LICENSE)
 
-## 贡献
+## Contributing
 
-欢迎提交 Pull Request 和 Issue！
+Pull Requests and Issues are welcome!
