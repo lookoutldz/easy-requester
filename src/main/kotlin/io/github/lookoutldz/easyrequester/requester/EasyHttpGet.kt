@@ -4,13 +4,16 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.util.isDataClass
-import io.github.lookoutldz.easyrequester.util.isKotlinModuleRegistered
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import kotlin.String
 
+/**
+ *  @author looko
+ *  @date 2025/5/20
+ *  core class
+ */
 class EasyHttpGet<T> private constructor(
     private val url: String,
     private val params: Map<String, String>? = null,

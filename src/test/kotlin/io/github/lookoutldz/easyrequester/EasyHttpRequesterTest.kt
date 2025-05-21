@@ -7,7 +7,6 @@ import io.github.lookoutldz.easyrequester.requester.EasyHttpGet
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.jupiter.api.Test
-import kotlin.reflect.KClass
 
 class EasyHttpRequesterTest {
 
@@ -18,7 +17,7 @@ class EasyHttpRequesterTest {
 
     // will return {data=2000, statusCode=0, statusMessage=SUCCESS}
     private val baseUrl = "http://127.0.0.1:58080/fetch-random-sleep"
-    private val params = mapOf("millis" to "2000")
+    private val params = mapOf("millis" to "233")
     private val fullUrl = "$baseUrl?millis=${params["millis"]}"
     private val headers = mapOf("" to "")
     private val cookies = mapOf("" to "")

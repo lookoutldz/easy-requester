@@ -25,11 +25,9 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>io.github.lookoutldz</groupId>
     <artifactId>easy-requester</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 </dependency>
 ```
-Note: This project is currently in SNAPSHOT and has not been published to the central repository. 
-It will be published with the official release.
 
 ## Quick Start
 

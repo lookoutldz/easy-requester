@@ -25,10 +25,9 @@ Easy Requester 是一个轻量级的 Kotlin HTTP 客户端库，它基于 OkHttp
 <dependency>
     <groupId>io.github.lookoutldz</groupId>
     <artifactId>easy-requester</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 </dependency>
 ```
-注：当前项目在 SNAPSHOT 中，并未发布到中央仓库，将于正式版发布
 
 ## 快速开始
 
