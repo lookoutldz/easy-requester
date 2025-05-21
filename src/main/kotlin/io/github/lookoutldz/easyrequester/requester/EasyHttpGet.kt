@@ -170,6 +170,7 @@ class EasyHttpGet<T> private constructor(
             }
         }
 
+        @Suppress("UNCHECKED_CAST")
         private fun defaultResponseSuccessHandler(response: Response) {
             val t = response.body?.let { body ->
                 val objectMapper = this.objectMapper ?: specifiedObjectMapper
