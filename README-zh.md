@@ -29,6 +29,20 @@ Easy Requester 是一个轻量级的 Kotlin HTTP 客户端库，它基于 OkHttp
 </dependency>
 ```
 
+### Gradle
+
+在你的 `build.gradle` 文件中添加以下依赖：
+
+```groovy
+implementation 'io.github.lookoutldz:easy-requester:1.0'
+```
+
+如果使用的是 Kotlin DSL, 则是在 ``build.gradle.kts`` 中添加依赖：
+
+```kotlin
+implementation("io.github.lookoutldz:easy-requester:1.0")
+```
+
 ## 快速开始
 
 ### 基本用法

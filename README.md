@@ -29,6 +29,20 @@ Add the following dependency to your `pom.xml` file:
 </dependency>
 ```
 
+### Gradle
+
+Add the following dependency to your `build.gradle` file:
+
+```groovy
+implementation 'io.github.lookoutldz:easy-requester:1.0'
+```
+
+Or add the following dependency to your `build.gradle.kts` file if you are using Kotlin DSL:
+
+```kotlin
+implementation("io.github.lookoutldz:easy-requester:1.0")
+```
+
 ## Quick Start
 
 ### Basic Usage
