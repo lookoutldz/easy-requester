@@ -4,22 +4,25 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.util.isDataClass
-import io.github.lookoutldz.easyrequester.util.isKotlinModuleRegistered
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 
 /**
  *  @author looko
- *  @date 2025/5/20
- *  core class
+ *  @date 2025/5/21
+ *  POST请求核心类
  */
-class EasyHttpGet<T> private constructor(
+class EasyHttpPost<T> private constructor(
     private val url: String,
     private val params: Map<String, String>? = null,
     private val headers: Map<String, String>? = null,
     private val cookies: Map<String, String>? = null,
+    private val body: Any? = null,
+    private val contentType: String = "application/json",
     private val okHttpClient: OkHttpClient,
     private val responseHandler: (Response) -> Unit,
     private val exceptionHandler: (Throwable, Request) -> Unit
@@ -30,6 +33,8 @@ class EasyHttpGet<T> private constructor(
         // 使用 reified 类型参数创建便捷方法
         inline fun <reified T> doRequest(
             url: String,
+            body: Any? = null,
+            contentType: String = "application/json",
             params: Map<String, String>? = null,
             headers: Map<String, String>? = null,
             cookies: Map<String, String>? = null,
@@ -43,6 +48,8 @@ class EasyHttpGet<T> private constructor(
         ) {
             return Builder(T::class.java)
                 .setUrl(url)
+                .setBody(body)
+                .setContentType(contentType)
                 .setParams(params)
                 .setHeaders(headers)
                 .setCookies(cookies)
@@ -62,6 +69,8 @@ class EasyHttpGet<T> private constructor(
         // 创建默认的 String 类型处理器
         fun doRequestDefault(
             url: String,
+            body: Any? = null,
+            contentType: String = "application/json",
             params: Map<String, String>? = null,
             headers: Map<String, String>? = null,
             cookies: Map<String, String>? = null,
@@ -74,6 +83,8 @@ class EasyHttpGet<T> private constructor(
         ) {
             return doRequest<String>(
                 url = url,
+                body = body,
+                contentType = contentType,
                 params = params,
                 headers = headers,
                 cookies = cookies,
@@ -89,6 +100,8 @@ class EasyHttpGet<T> private constructor(
         // 创建原始Response处理器
         fun doRequestRaw(
             url: String,
+            body: Any? = null,
+            contentType: String = "application/json",
             params: Map<String, String>? = null,
             headers: Map<String, String>? = null,
             cookies: Map<String, String>? = null,
@@ -99,6 +112,8 @@ class EasyHttpGet<T> private constructor(
         ) {
             return doRequest<Any>(
                 url = url,
+                body = body,
+                contentType = contentType,
                 params = params,
                 headers = headers,
                 cookies = cookies,
@@ -116,6 +131,8 @@ class EasyHttpGet<T> private constructor(
         private var objectMapper: ObjectMapper? = null
 
         private lateinit var url: String
+        private var body: Any? = null
+        private var contentType: String = "application/json"
         private var params: Map<String, String>? = null
         private var headers: Map<String, String>? = null
         private var cookies: Map<String, String>? = null
@@ -136,6 +153,8 @@ class EasyHttpGet<T> private constructor(
         fun setObjectMapper(objectMapper: ObjectMapper?): Builder<T> = apply { this.objectMapper = objectMapper ?: specifiedObjectMapper }
 
         fun setUrl(url: String): Builder<T> = apply { this.url = url }
+        fun setBody(body: Any?): Builder<T> = apply { this.body = body }
+        fun setContentType(contentType: String): Builder<T> = apply { this.contentType = contentType }
         fun setParams(params: Map<String, String>?): Builder<T> = apply { this.params = params }
         fun setHeaders(headers: Map<String, String>?): Builder<T> = apply { this.headers = headers }
         fun setCookies(cookies: Map<String, String>?): Builder<T> = apply { this.cookies = cookies }
@@ -154,9 +173,11 @@ class EasyHttpGet<T> private constructor(
             }
         }
 
-        fun build(): EasyHttpGet<T> {
-            return EasyHttpGet(
+        fun build(): EasyHttpPost<T> {
+            return EasyHttpPost(
                 url = url,
+                body = body,
+                contentType = contentType,
                 params = params,
                 headers = headers,
                 cookies = cookies,
@@ -178,7 +199,6 @@ class EasyHttpGet<T> private constructor(
         private fun defaultResponseSuccessHandler(response: Response) {
             val t = response.body?.let { body ->
                 val objectMapper = this.objectMapper ?: specifiedObjectMapper
-                println(isKotlinModuleRegistered(objectMapper))
                 if (clazz != null) {
                     if (clazz == String::class.java) {
                         body.string() as T
@@ -212,7 +232,7 @@ class EasyHttpGet<T> private constructor(
 
     fun execute() {
         // 构建请求
-        val request = generateRequest(url, params, headers, cookies)
+        val request = generateRequest(url, body, contentType, params, headers, cookies)
 
         try {
             // 发起请求
@@ -228,9 +248,12 @@ class EasyHttpGet<T> private constructor(
 
     private val userAgentKey = "User-Agent"
     private val userAgentValueDefault = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
+    private val contentTypeKey = "Content-Type"
 
     private fun generateRequest(
         url: String,
+        body: Any?,
+        contentType: String,
         params: Map<String, String>? = null,
         headers: Map<String, String>? = null,
         cookies: Map<String, String>? = null
@@ -253,11 +276,23 @@ class EasyHttpGet<T> private constructor(
             ?: requestBuilder.url(url)
 
         // 头信息处理
-        headers
-            ?.filterNot { (key, value) ->
+        val mutableHeaders = headers?.toMutableMap() ?: mutableMapOf()
+        
+        // 设置Content-Type
+        if (!mutableHeaders.any { it.key.equals(contentTypeKey, true) }) {
+            mutableHeaders[contentTypeKey] = contentType
+        }
+        
+        // 设置User-Agent
+        if (!mutableHeaders.any { it.key.equals(userAgentKey, true) }) {
+            mutableHeaders[userAgentKey] = userAgentValueDefault
+        }
+        
+        mutableHeaders
+            .filterNot { (key, value) ->
                 key.isBlank() || value.isBlank()
             }
-            ?.forEach { (key, value) ->
+            .forEach { (key, value) ->
                 requestBuilder.header(key, value)
             }
 
@@ -273,12 +308,25 @@ class EasyHttpGet<T> private constructor(
                 }
             }
 
-        // 若没有指定 User-Agent 则使用默认值
-        if (headers?.any { it.key.equals(userAgentKey, true) } == false) {
-            requestBuilder.addHeader(userAgentKey, userAgentValueDefault)
+        // 处理请求体
+        val requestBody = when (body) {
+            is String -> body.toRequestBody(contentType.toMediaType())
+            is ByteArray -> body.toRequestBody(contentType.toMediaType())
+            is okhttp3.RequestBody -> body  // 直接使用传入的 RequestBody（包括 MultipartBody）
+            null -> "".toRequestBody(contentType.toMediaType())
+            else -> {
+                val objectMapper = ObjectMapper().apply {
+                    if (body::class.java.kotlin.isData) {
+                        registerKotlinModule()
+                    }
+                }
+                objectMapper.writeValueAsString(body).toRequestBody(contentType.toMediaType())
+            }
         }
+
+        // 设置POST方法和请求体
+        requestBuilder.post(requestBody)
 
         return requestBuilder.build()
     }
-
 }

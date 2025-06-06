@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="87ac3ba7-dddf-424b-aba6-919d6b1ffef1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/lookoutldz/easyrequester/requester/EasyHttpGet.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/lookoutldz/easyrequester/util/EasyUtils.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/io/github/lookoutldz/easyrequester/EasyHttpRequesterTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/kotlin/io/github/lookoutldz/easyrequester/EasyHttpPostRequesterTest.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/kotlin/io/github/lookoutldz/easyrequester/Entities.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/io/github/lookoutldz/easyrequester/requester/EasyHttpGet.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/io/github/lookoutldz/easyrequester/requester/EasyHttpGet.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/io/github/lookoutldz/easyrequester/EasyHttpRequesterTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/io/github/lookoutldz/easyrequester/EasyHttpGetRequesterTest.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +26,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;lookoutldz&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/lookoutldz/easy-requester.git&quot;,
+    &quot;accountId&quot;: &quot;27a93a49-b38a-4752-aeda-b7c8ad7c27ce&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2xLx0d2AiS36bIXRKSQvKpupLqS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -38,6 +49,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JUnit.EasyHttpGetRequesterTest.testDoRequest.executor": "Run",
+    "JUnit.EasyHttpPostRequesterTest.contextLoads.executor": "Run",
+    "JUnit.EasyHttpPostRequesterTest.executor": "Run",
+    "JUnit.EasyHttpPostRequesterTest.post.executor": "Run",
+    "JUnit.EasyHttpPostRequesterTest.postUser.executor": "Run",
+    "JUnit.EasyHttpPostRequesterTest.testMultipartPost.executor": "Run",
+    "JUnit.EasyHttpPostRequesterTest.testXmlPost.executor": "Run",
     "JUnit.EasyHttpRequesterTest.contextLoads.executor": "Run",
     "JUnit.EasyHttpRequesterTest.testBuilder.executor": "Run",
     "JUnit.EasyHttpRequesterTest.testBuilderException.executor": "Run",
@@ -47,15 +65,22 @@
     "JUnit.EasyHttpRequesterTest.testObjectMapper.executor": "Run",
     "JUnit.EasyHttpRequesterTest.testWeirdRequest.executor": "Run",
     "JUnit.EasyHttpRequesterTest.testdoRequestDefault.executor": "Run",
+    "Maven.easy-requester [clean,deploy...].executor": "Run",
+    "Maven.easy-requester [clean,deploy].executor": "Run",
+    "Maven.easy-requester [clean,package].executor": "Run",
+    "Maven.easy-requester [clean,verify].executor": "Run",
+    "Maven.easy-requester [install].executor": "Run",
+    "Maven.easy-requester [package].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/looko/Workspaces/IdeaProjects/easy-requester",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.gitlab.GitLabSettingsConfigurable",
+    "settings.editor.selected.configurable": "fileTemplates",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -64,8 +89,18 @@
       <recent name="io.github.lookoutldz.easyrequester.requester" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.EasyHttpRequesterTest.testDoRequest">
-    <configuration name="EasyHttpRequesterTest.testBuilderException" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn package" />
+      <command value="mvn install" />
+      <command value="mvn clean deploy -Dgpg.passphrase=Looko123!" />
+      <command value="mvn clean verify" />
+      <command value="mvn clean deploy" />
+      <command value="mvn clean package" />
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.EasyHttpPostRequesterTest.testXmlPost">
+    <configuration name="EasyHttpGetRequesterTest.testDoRequest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="easy-requester" />
       <extension name="coverage">
         <pattern>
@@ -74,46 +109,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="io.github.lookoutldz.easyrequester" />
-      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpRequesterTest" />
-      <option name="METHOD_NAME" value="testBuilderException" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="EasyHttpRequesterTest.testClarifyDataType" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="easy-requester" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.github.lookoutldz.easyrequester.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="io.github.lookoutldz.easyrequester" />
-      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpRequesterTest" />
-      <option name="METHOD_NAME" value="testClarifyDataType" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="EasyHttpRequesterTest.testDoRequest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="easy-requester" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="io.github.lookoutldz.easyrequester.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="io.github.lookoutldz.easyrequester" />
-      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpRequesterTest" />
+      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpGetRequesterTest" />
       <option name="METHOD_NAME" value="testDoRequest" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="EasyHttpRequesterTest.testObjectMapper" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="EasyHttpPostRequesterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="easy-requester" />
       <extension name="coverage">
         <pattern>
@@ -122,14 +125,29 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="io.github.lookoutldz.easyrequester" />
-      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpRequesterTest" />
-      <option name="METHOD_NAME" value="testObjectMapper" />
+      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpPostRequesterTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EasyHttpPostRequesterTest.postUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="easy-requester" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.lookoutldz.easyrequester.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.lookoutldz.easyrequester" />
+      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpPostRequesterTest" />
+      <option name="METHOD_NAME" value="postUser" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="EasyHttpRequesterTest.testWeirdRequest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="EasyHttpPostRequesterTest.testMultipartPost" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="easy-requester" />
       <extension name="coverage">
         <pattern>
@@ -138,8 +156,24 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="io.github.lookoutldz.easyrequester" />
-      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpRequesterTest" />
-      <option name="METHOD_NAME" value="testWeirdRequest" />
+      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpPostRequesterTest" />
+      <option name="METHOD_NAME" value="testMultipartPost" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EasyHttpPostRequesterTest.testXmlPost" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="easy-requester" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.lookoutldz.easyrequester.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.lookoutldz.easyrequester" />
+      <option name="MAIN_CLASS_NAME" value="io.github.lookoutldz.easyrequester.EasyHttpPostRequesterTest" />
+      <option name="METHOD_NAME" value="testXmlPost" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -147,11 +181,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.EasyHttpRequesterTest.testDoRequest" />
-        <item itemvalue="JUnit.EasyHttpRequesterTest.testWeirdRequest" />
-        <item itemvalue="JUnit.EasyHttpRequesterTest.testObjectMapper" />
-        <item itemvalue="JUnit.EasyHttpRequesterTest.testClarifyDataType" />
-        <item itemvalue="JUnit.EasyHttpRequesterTest.testBuilderException" />
+        <item itemvalue="JUnit.EasyHttpPostRequesterTest.testXmlPost" />
+        <item itemvalue="JUnit.EasyHttpPostRequesterTest.testMultipartPost" />
+        <item itemvalue="JUnit.EasyHttpPostRequesterTest" />
+        <item itemvalue="JUnit.EasyHttpGetRequesterTest.testDoRequest" />
+        <item itemvalue="JUnit.EasyHttpPostRequesterTest.postUser" />
       </list>
     </recent_temporary>
   </component>
@@ -176,11 +210,42 @@
       <updated>1736581765418</updated>
       <workItem from="1736581769939" duration="30000" />
       <workItem from="1746196067490" duration="1163000" />
-      <workItem from="1747730933809" duration="17651000" />
+      <workItem from="1747730933809" duration="50113000" />
+      <workItem from="1748230259187" duration="10662000" />
+      <workItem from="1748271436232" duration="2994000" />
+      <workItem from="1748665202889" duration="5000" />
+      <workItem from="1749175722279" duration="90000" />
+      <workItem from="1749176113893" duration="4840000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/io/github/lookoutldz/easyrequester/requester/EasyHttpGet.kt</url>
+          <line>185</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
