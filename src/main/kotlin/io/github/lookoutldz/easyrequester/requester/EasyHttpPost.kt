@@ -3,8 +3,7 @@ package io.github.lookoutldz.easyrequester.requester
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.github.lookoutldz.easyrequester.util.isDataClass
-import okhttp3.HttpUrl.Companion.toHttpUrl
+import io.github.lookoutldz.easyrequester.requester.common.AbstractEasyHttp
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -17,20 +16,33 @@ import okhttp3.Response
  *  POST请求核心类
  */
 class EasyHttpPost<T> private constructor(
-    private val url: String,
-    private val params: Map<String, String>? = null,
-    private val headers: Map<String, String>? = null,
-    private val cookies: Map<String, String>? = null,
+    url: String,
+    params: Map<String, String>? = null,
+    headers: Map<String, String>? = null,
+    cookies: Map<String, String>? = null,
+    okHttpClient: OkHttpClient,
+    responseHandler: (Response) -> Unit,
+    exceptionHandler: (Throwable, Request) -> Unit,
     private val body: Any? = null,
     private val contentType: String = "application/json",
-    private val okHttpClient: OkHttpClient,
-    private val responseHandler: (Response) -> Unit,
-    private val exceptionHandler: (Throwable, Request) -> Unit
+): AbstractEasyHttp<T>(
+    url = url,
+    params = params,
+    headers = headers,
+    cookies = cookies,
+    okHttpClient = okHttpClient,
+    responseHandler = responseHandler,
+    exceptionHandler = exceptionHandler
 ) {
 
     // 添加一个伴生对象，提供便捷的创建方法
     companion object {
-        // 使用 reified 类型参数创建便捷方法
+
+        /**
+         * 使用了 reified 类型参数, 创建带类型的处理器
+         * 使用方式:
+         *  doRequest<T>(url) { t -> // do business }
+         */
         inline fun <reified T> doRequest(
             url: String,
             body: Any? = null,
@@ -66,7 +78,11 @@ class EasyHttpPost<T> private constructor(
                 .execute()
         }
 
-        // 创建默认的 String 类型处理器
+        /**
+         * 创建默认的 String 类型处理器
+         * 使用方式:
+         *  doRequestDefault(url) { string -> // do business }
+         */
         fun doRequestDefault(
             url: String,
             body: Any? = null,
@@ -97,7 +113,11 @@ class EasyHttpPost<T> private constructor(
             )
         }
 
-        // 创建原始Response处理器
+        /**
+         * 创建原始返回处理器, 用户可以自行处理返回体
+         * 使用方式:
+         *  doRequestRaw(url) { response -> // do business }
+         */
         fun doRequestRaw(
             url: String,
             body: Any? = null,
@@ -125,59 +145,16 @@ class EasyHttpPost<T> private constructor(
         }
     }
 
-    class Builder<T>() {
+    class Builder<T>: AbstractEasyHttp.Builder<T> {
 
-        private var okHttpClient: OkHttpClient? = null
-        private var objectMapper: ObjectMapper? = null
+        constructor(clazz: Class<T>) : super(clazz)
+        constructor(typeReference: TypeReference<T>) : super(typeReference)
 
-        private lateinit var url: String
-        private var body: Any? = null
-        private var contentType: String = "application/json"
-        private var params: Map<String, String>? = null
-        private var headers: Map<String, String>? = null
-        private var cookies: Map<String, String>? = null
-
-        private var clazz: Class<T>? = null
-        private var typeReference: TypeReference<T>? = null
-
-        private var responseHandler: ((Response) -> Unit)? = null
-        private var responseSuccessHandler: ((Response) -> Unit)? = null
-        private var responseFailureHandler: ((Response) -> Unit)? = null
-        private var successHandler: ((T?) -> Unit)? = null
-        private var exceptionHandler: ((Throwable, Request) -> Unit)? = null
-
-        constructor(clazz: Class<T>) : this() { this.clazz = clazz }
-        constructor(typeReference: TypeReference<T>) : this() { this.typeReference = typeReference }
-
-        fun setOkHttpClient(okHttpClient: OkHttpClient?): Builder<T> = apply { this.okHttpClient = okHttpClient ?: OkHttpClient() }
-        fun setObjectMapper(objectMapper: ObjectMapper?): Builder<T> = apply { this.objectMapper = objectMapper ?: specifiedObjectMapper }
-
-        fun setUrl(url: String): Builder<T> = apply { this.url = url }
-        fun setBody(body: Any?): Builder<T> = apply { this.body = body }
-        fun setContentType(contentType: String): Builder<T> = apply { this.contentType = contentType }
-        fun setParams(params: Map<String, String>?): Builder<T> = apply { this.params = params }
-        fun setHeaders(headers: Map<String, String>?): Builder<T> = apply { this.headers = headers }
-        fun setCookies(cookies: Map<String, String>?): Builder<T> = apply { this.cookies = cookies }
-
-        fun onResponse(handler: (Response) -> Unit): Builder<T> = apply { this.responseHandler = handler }
-        fun onResponseSuccess(handler: (Response) -> Unit): Builder<T> = apply { this.responseSuccessHandler = handler }
-        fun onResponseFailure(handler: (Response) -> Unit): Builder<T> = apply { this.responseFailureHandler = handler }
-        fun onSuccess(handler: (T?) -> Unit): Builder<T> = apply { this.successHandler = handler }
-        fun onException(handler: (Throwable, Request) -> Unit): Builder<T> = apply { this.exceptionHandler = handler }
-
-        private val specifiedObjectMapper by lazy {
-            if (isDataClass(clazz) || isDataClass(typeReference)) {
-                return@lazy objectMapper ?: ObjectMapper().registerKotlinModule()
-            } else {
-                return@lazy objectMapper ?: ObjectMapper()
-            }
-        }
-
-        fun build(): EasyHttpPost<T> {
+        override fun build(): EasyHttpPost<T> {
             return EasyHttpPost(
                 url = url,
                 body = body,
-                contentType = contentType,
+                contentType = contentType ?: "application/json",
                 params = params,
                 headers = headers,
                 cookies = cookies,
@@ -187,52 +164,11 @@ class EasyHttpPost<T> private constructor(
             )
         }
 
-        private fun defaultResponseHandler(response: Response) {
-            if (response.isSuccessful) {
-                responseSuccessHandler?.invoke(response) ?: defaultResponseSuccessHandler(response)
-            } else {
-                responseFailureHandler?.invoke(response) ?: defaultResponseFailureHandler(response)
-            }
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        private fun defaultResponseSuccessHandler(response: Response) {
-            val t = response.body?.let { body ->
-                val objectMapper = this.objectMapper ?: specifiedObjectMapper
-                if (clazz != null) {
-                    if (clazz == String::class.java) {
-                        body.string() as T
-                    } else {
-                        objectMapper.readValue(body.byteStream(), clazz) as T
-                    }
-                } else if (typeReference != null) {
-                    objectMapper.readValue(body.byteStream(), typeReference) as T
-                } else {
-                    throw RuntimeException("No Class or TypeReference Specified!")
-                }
-            }
-
-            successHandler?.invoke(t) ?: defaultSuccessHandler(t)
-        }
-
-        private fun defaultResponseFailureHandler(response: Response) {
-            println("${response.code}-${response.message}: ${response.body?.string()}")
-        }
-
-        private fun defaultSuccessHandler(t: T?) {
-            println("SUCCESS: ${t.toString()}")
-        }
-
-        private fun defaultExceptionHandler(e: Throwable, request: Request) {
-            println("ERROR: [${request.method}]${request.url}: ${e.message}")
-            throw e
-        }
-
     }
 
-    fun execute() {
+    override fun execute() {
         // 构建请求
-        val request = generateRequest(url, body, contentType, params, headers, cookies)
+        val request = generateRequest(url, params, headers, cookies, body, contentType)
 
         try {
             // 发起请求
@@ -246,67 +182,24 @@ class EasyHttpPost<T> private constructor(
         }
     }
 
-    private val userAgentKey = "User-Agent"
-    private val userAgentValueDefault = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36"
     private val contentTypeKey = "Content-Type"
 
     private fun generateRequest(
         url: String,
-        body: Any?,
-        contentType: String,
         params: Map<String, String>? = null,
         headers: Map<String, String>? = null,
-        cookies: Map<String, String>? = null
+        cookies: Map<String, String>? = null,
+        body: Any?,
+        contentType: String,
     ): Request {
 
-        val requestBuilder = Request.Builder()
-
-        // 参数处理
-        params
-            ?.filterNot { (key, _) ->
-                key.isBlank()
-            }
-            ?.let {
-                val urlBuilder = url.toHttpUrl().newBuilder()
-                for ((key, value) in it) {
-                    urlBuilder.addQueryParameter(key, value)
-                }
-                requestBuilder.url(urlBuilder.build())
-            }
-            ?: requestBuilder.url(url)
-
-        // 头信息处理
-        val mutableHeaders = headers?.toMutableMap() ?: mutableMapOf()
-        
+        val mergedHeaders = headers?.toMutableMap() ?: mutableMapOf()
         // 设置Content-Type
-        if (!mutableHeaders.any { it.key.equals(contentTypeKey, true) }) {
-            mutableHeaders[contentTypeKey] = contentType
+        if (!mergedHeaders.any { it.key.equals(contentTypeKey, true) }) {
+            mergedHeaders[contentTypeKey] = contentType
         }
-        
-        // 设置User-Agent
-        if (!mutableHeaders.any { it.key.equals(userAgentKey, true) }) {
-            mutableHeaders[userAgentKey] = userAgentValueDefault
-        }
-        
-        mutableHeaders
-            .filterNot { (key, value) ->
-                key.isBlank() || value.isBlank()
-            }
-            .forEach { (key, value) ->
-                requestBuilder.header(key, value)
-            }
 
-        // Cookie处理
-        cookies
-            ?.filterNot { (key, value) ->
-                key.isBlank() || value.isBlank()
-            }
-            ?.let { cookieMap ->
-                val cookieString = cookieMap.entries.joinToString("; ") { (key, value) -> "$key=$value" }
-                if (cookieString.isNotBlank()) {
-                    requestBuilder.addHeader("Cookie", cookieString)
-                }
-            }
+        val requestBuilder = commonRequestGenerator(url, params, mergedHeaders, cookies)
 
         // 处理请求体
         val requestBody = when (body) {

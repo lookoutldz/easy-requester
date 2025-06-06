@@ -24,20 +24,25 @@ class EasyHttpGetRequesterTest {
     private val cookies = mapOf("" to "")
 
     @Test
-    fun testDoRequest() {
-
-        // 1. simplest way
+    fun testDoRequestDefault() {
+        // 测试最简单的默认请求方式
         EasyHttpGet.doRequestDefault(url = userUrl) {
             // it is default to string
             println("01. ok - $it")
         }
+    }
 
-        // 2. simplest way by type
+    @Test
+    fun testDoRequestWithType() {
+        // 测试指定返回类型的请求
         EasyHttpGet.doRequest<ResponseBody<*>>(url = userUrl) { responseBody ->
             println("02. ok - ${responseBody?.data}")
         }
+    }
 
-        // 3. you can specify params
+    @Test
+    fun testDoRequestWithAllParams() {
+        // 测试带有完整参数的请求
         EasyHttpGet.doRequest<ResponseBody<*>>(
             url = baseUrl,
             params = params,
@@ -48,8 +53,11 @@ class EasyHttpGetRequesterTest {
         ) { responseBody ->
             println("03. ok - ${responseBody?.data}")
         }
+    }
 
-        // 4. you can implement your own exception handler
+    @Test
+    fun testDoRequestWithExceptionHandler() {
+        // 测试自定义异常处理器
         EasyHttpGet.doRequest<ResponseBody<*>>(
             url = fullUrl,
             objectMapper = ObjectMapper(),  // Exception here: this is not the correct ObjectMapper for Kotlin Data Class
@@ -59,13 +67,19 @@ class EasyHttpGetRequesterTest {
         ) { responseBody ->
             println("04. ok - ${responseBody?.data}")
         }
+    }
 
-        // 5. you can handle the whole raw response
+    @Test
+    fun testDoRequestRaw() {
+        // 测试处理原始响应
         EasyHttpGet.doRequestRaw(url = fullUrl) { response ->
             println("05. ok - ${response.isSuccessful} - ${response.code} - ${response.message}")
         }
+    }
 
-        // 6. you also can use builder to build a request
+    @Test
+    fun testBuilderPattern() {
+        // 测试使用Builder模式构建请求
         EasyHttpGet
             .Builder(ResponseBody::class.java)
             .setUrl(baseUrl)
@@ -81,8 +95,11 @@ class EasyHttpGetRequesterTest {
             }
             .build()
             .execute()  // don't forget to execute
+    }
 
-        // 7. you can use typeReference to specify a type
+    @Test
+    fun testBuilderWithTypeReference() {
+        // 测试使用TypeReference指定类型的Builder模式
         EasyHttpGet
             .Builder(object : TypeReference<ResponseBody<User>>() {})
             .setUrl(userUrl)
