@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.requester.EasyHttpPost
+import io.github.lookoutldz.easyrequester.util.dataClassInClass
+import io.github.lookoutldz.easyrequester.util.dataClassInTypeReference
 import io.github.lookoutldz.easyrequester.util.isDataClass
 import io.github.lookoutldz.easyrequester.util.isKotlinModuleRegistered
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -66,7 +68,7 @@ abstract class AbstractEasyHttp<T> internal constructor(
         fun onException(handler: (Throwable, Request) -> Unit): Builder<T> = apply { this.exceptionHandler = handler }
 
         private val specifiedObjectMapper by lazy {
-            if (isDataClass(clazz) || isDataClass(typeReference)) {
+            if (dataClassInClass(clazz) || dataClassInTypeReference(typeReference)) {
                 return@lazy objectMapper ?: ObjectMapper().registerKotlinModule()
             } else {
                 return@lazy objectMapper ?: ObjectMapper()
