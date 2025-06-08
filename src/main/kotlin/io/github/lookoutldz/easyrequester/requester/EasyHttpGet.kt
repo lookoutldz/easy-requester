@@ -3,6 +3,8 @@ package io.github.lookoutldz.easyrequester.requester
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.lookoutldz.easyrequester.requester.common.AbstractEasyHttp
+import io.github.lookoutldz.easyrequester.requester.common.EasyHttpRequestHelper
+import io.github.lookoutldz.easyrequester.requester.common.HttpMethod
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -32,7 +34,6 @@ class EasyHttpGet<T> private constructor(
 
     // 添加一个伴生对象，提供便捷的创建方法
     companion object {
-
         /**
          * 使用了 reified 类型参数, 创建带类型的处理器
          * 使用方式:
@@ -50,25 +51,21 @@ class EasyHttpGet<T> private constructor(
             noinline responseFailureHandler: ((response: Response) -> Unit)? = null,
             noinline exceptionHandler: ((error: Throwable?, request: Request) -> Unit)? = null,
             noinline successHandler: ((t: T?) -> Unit)? = null,
-        ) {
-            return Builder(T::class.java)
-                .setUrl(url)
-                .setParams(params)
-                .setHeaders(headers)
-                .setCookies(cookies)
-                .setOkHttpClient(okHttpClient)
-                .setObjectMapper(objectMapper)
-                .apply {
-                    responseHandler?.let { onResponse(it) }
-                    responseSuccessHandler?.let { onResponseSuccess(it) }
-                    responseFailureHandler?.let { onResponseFailure(it) }
-                    exceptionHandler?.let { onException(it) }
-                    successHandler?.let { onSuccess(it) }
-                }
-                .build()
-                .execute()
-        }
-
+        ) = EasyHttpRequestHelper.doRequest<T>(
+            method = HttpMethod.GET,
+            url = url,
+            params = params,
+            headers = headers,
+            cookies = cookies,
+            okHttpClient = okHttpClient,
+            objectMapper = objectMapper,
+            responseHandler = responseHandler,
+            responseSuccessHandler = responseSuccessHandler,
+            responseFailureHandler = responseFailureHandler,
+            exceptionHandler = exceptionHandler,
+            successHandler = successHandler
+        )
+    
         /**
          * 创建默认的 String 类型处理器
          * 使用方式:
@@ -85,21 +82,20 @@ class EasyHttpGet<T> private constructor(
             responseFailureHandler: ((response: Response) -> Unit)? = null,
             exceptionHandler: ((error: Throwable?, request: Request) -> Unit)? = null,
             successHandler: ((t: String?) -> Unit)? = null,
-        ) {
-            return doRequest<String>(
-                url = url,
-                params = params,
-                headers = headers,
-                cookies = cookies,
-                okHttpClient = okHttpClient,
-                objectMapper = objectMapper,
-                responseSuccessHandler = responseSuccessHandler,
-                responseFailureHandler = responseFailureHandler,
-                exceptionHandler = exceptionHandler,
-                successHandler = successHandler,
-            )
-        }
-
+        ) = EasyHttpRequestHelper.doRequestDefault(
+            method = HttpMethod.GET,
+            url = url,
+            params = params,
+            headers = headers,
+            cookies = cookies,
+            okHttpClient = okHttpClient,
+            objectMapper = objectMapper,
+            responseSuccessHandler = responseSuccessHandler,
+            responseFailureHandler = responseFailureHandler,
+            exceptionHandler = exceptionHandler,
+            successHandler = successHandler
+        )
+    
         /**
          * 创建原始返回处理器, 用户可以自行处理返回体
          * 使用方式:
@@ -114,18 +110,18 @@ class EasyHttpGet<T> private constructor(
             objectMapper: ObjectMapper? = null,
             exceptionHandler: ((Throwable?, Request) -> Unit)? = null,
             responseHandler: ((Response) -> Unit)? = null,
-        ) {
-            return doRequest<Any>(
-                url = url,
-                params = params,
-                headers = headers,
-                cookies = cookies,
-                okHttpClient = okHttpClient,
-                objectMapper = objectMapper,
-                exceptionHandler = exceptionHandler,
-                responseHandler = responseHandler,
-            )
-        }
+        ) = EasyHttpRequestHelper.doRequestRaw(
+            method = HttpMethod.GET,
+            url = url,
+            params = params,
+            headers = headers,
+            cookies = cookies,
+            okHttpClient = okHttpClient,
+            objectMapper = objectMapper,
+            exceptionHandler = exceptionHandler,
+            responseHandler = responseHandler
+        )
+
     }
 
     class Builder<T>: AbstractEasyHttp.Builder<T> {

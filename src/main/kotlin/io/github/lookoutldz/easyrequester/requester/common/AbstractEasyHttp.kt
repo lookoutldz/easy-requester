@@ -3,10 +3,8 @@ package io.github.lookoutldz.easyrequester.requester.common
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.github.lookoutldz.easyrequester.requester.EasyHttpPost
 import io.github.lookoutldz.easyrequester.util.dataClassInClass
 import io.github.lookoutldz.easyrequester.util.dataClassInTypeReference
-import io.github.lookoutldz.easyrequester.util.isDataClass
 import io.github.lookoutldz.easyrequester.util.isKotlinModuleRegistered
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -74,7 +72,6 @@ abstract class AbstractEasyHttp<T> internal constructor(
                 return@lazy objectMapper ?: ObjectMapper()
             }
         }
-
 
         abstract fun build(): AbstractEasyHttp<T>
 
