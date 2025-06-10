@@ -1,0 +1,175 @@
+package io.github.lookoutldz.easyrequester.requester4j
+
+import com.fasterxml.jackson.core.type.TypeReference
+import io.github.lookoutldz.easyrequester.requester4j.common.*
+import okhttp3.OkHttpClient
+
+/**
+ * Java友好版本的GET请求类
+ * @author looko
+ * @date 2025/6/6
+ */
+class EasyHttpGet4j<T> private constructor(
+    url: String,
+    params: Map<String, String>?,
+    headers: Map<String, String>?,
+    cookies: Map<String, String>?,
+    okHttpClient: OkHttpClient,
+    responseHandler: ResponseHandler?,
+    exceptionHandler: ExceptionHandler?
+) : AbstractEasyHttp4j<T>(
+    url = url,
+    params = params,
+    headers = headers,
+    cookies = cookies,
+    okHttpClient = okHttpClient,
+    responseHandler = responseHandler,
+    exceptionHandler = exceptionHandler
+) {
+
+    companion object {
+        /**
+         * 创建带 clazz 的处理器
+         */
+        @JvmStatic
+        fun <T> doRequest(
+            clazz: Class<T>,
+            url: String,
+            successHandler: SuccessHandler<T>
+        ) =
+            Builder(clazz)
+                .setUrl(url)
+                .onSuccess(successHandler)
+                .build()
+                .execute()
+
+        @JvmStatic
+        fun <T> doRequest(
+            clazz: Class<T>,
+            url: String,
+            successHandler: SuccessHandler<T>,
+            exceptionHandler: ExceptionHandler
+        ) =
+            Builder(clazz)
+                .setUrl(url)
+                .onSuccess(successHandler)
+                .onException(exceptionHandler)
+                .build()
+                .execute()
+
+        /**
+         * 重载一个 typeReference 的版本
+         */
+        @JvmStatic
+        fun <T> doRequest(
+            typeReference: TypeReference<T>,
+            url: String,
+            successHandler: SuccessHandler<T>
+        ) =
+            Builder(typeReference)
+                .setUrl(url)
+                .onSuccess(successHandler)
+                .build()
+                .execute()
+
+        @JvmStatic
+        fun <T> doRequest(
+            typeReference: TypeReference<T>,
+            url: String,
+            successHandler: SuccessHandler<T>,
+            exceptionHandler: ExceptionHandler
+        ) =
+            Builder(typeReference)
+                .setUrl(url)
+                .onSuccess(successHandler)
+                .onException(exceptionHandler)
+                .build()
+                .execute()
+
+        /**
+         * 创建默认的 String 类型处理器
+         */
+        @JvmStatic
+        fun doRequestDefault(
+            url: String,
+            successHandler: SuccessHandler<String>
+        ) =
+            Builder(String::class.java)
+                .setUrl(url)
+                .onSuccess(successHandler)
+                .build()
+                .execute()
+
+        @JvmStatic
+        fun doRequestDefault(
+            url: String,
+            successHandler: SuccessHandler<String>,
+            exceptionHandler: ExceptionHandler
+        ) =
+            Builder(String::class.java)
+                .setUrl(url)
+                .onSuccess(successHandler)
+                .onException(exceptionHandler)
+                .build()
+                .execute()
+        /**
+         * 创建原始返回处理器, 用户可以自行处理返回体
+         */
+        @JvmStatic
+        fun doRequestRaw(
+            url: String,
+            responseHandler: ResponseHandler
+        ) =
+            Builder(Object::class.java)
+                .setUrl(url)
+                .onResponse(responseHandler)
+                .build()
+                .execute()
+
+        @JvmStatic
+        fun doRequestRaw(
+            url: String,
+            responseHandler: ResponseHandler,
+            exceptionHandler: ExceptionHandler
+        ) =
+            Builder(Object::class.java)
+                .setUrl(url)
+                .onResponse(responseHandler)
+                .onException(exceptionHandler)
+                .build()
+                .execute()
+
+    }
+
+    class Builder<T> : AbstractEasyHttp4j.Builder<T> {
+        constructor(clazz: Class<T>) : super(clazz)
+        constructor(typeReference: TypeReference<T>) : super(typeReference)
+
+        override fun build(): EasyHttpGet4j<T> {
+            return EasyHttpGet4j(
+                url = url,
+                params = params,
+                headers = headers,
+                cookies = cookies,
+                okHttpClient = okHttpClient ?: OkHttpClient(),
+                responseHandler = responseHandler ?: getDefaultResponseHandler(),
+                exceptionHandler = exceptionHandler ?: getDefaultExceptionHandler()
+            )
+        }
+    }
+
+    override fun execute() {
+        // 构建请求
+        val request = commonRequestGenerator(url, params, headers, cookies).build()
+
+        try {
+            // 发起请求
+            okHttpClient.newCall(request).execute().use { response ->
+                // 使用 use 安全管理资源
+                responseHandler?.onResponse(response)
+            }
+        } catch (e: Exception) {
+            exceptionHandler?.onException(e, request)
+        }
+    }
+}
