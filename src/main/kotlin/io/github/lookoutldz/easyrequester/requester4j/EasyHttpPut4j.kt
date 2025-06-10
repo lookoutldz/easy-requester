@@ -1,9 +1,6 @@
 package io.github.lookoutldz.easyrequester.requester4j
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.github.lookoutldz.easyrequester.requester4j.EasyHttpPost4j.Builder
 import io.github.lookoutldz.easyrequester.requester4j.common.*
 import io.github.lookoutldz.easyrequester.util.dataClassInClass
 import io.github.lookoutldz.easyrequester.util.getEffectiveObjectMapper
@@ -11,7 +8,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 
 /**
  * Java友好版本的PUT请求类
@@ -28,7 +24,7 @@ class EasyHttpPut4j<T> private constructor(
     exceptionHandler: ExceptionHandler?,
     private val body: Any?,
     private val contentType: String
-) : AbstractEasyHttp4j<T>(
+) : AbstractEasyHttp4j(
     url = url,
     params = params,
     headers = headers,

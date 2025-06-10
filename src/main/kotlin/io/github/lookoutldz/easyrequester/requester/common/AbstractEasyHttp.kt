@@ -15,7 +15,7 @@ import okhttp3.Response
  *  @date 2025/6/6
  *
  */
-abstract class AbstractEasyHttp<T> internal constructor(
+abstract class AbstractEasyHttp internal constructor(
     protected val url: String,
     protected val params: Map<String, String>? = null,
     protected val headers: Map<String, String>? = null,
@@ -69,7 +69,7 @@ abstract class AbstractEasyHttp<T> internal constructor(
             getEffectiveObjectMapper(dataClassInClass(clazz) || dataClassInTypeReference(typeReference))
         }
 
-        abstract fun build(): AbstractEasyHttp<T>
+        abstract fun build(): AbstractEasyHttp
 
         protected fun defaultResponseHandler(response: Response) {
             if (response.isSuccessful) {

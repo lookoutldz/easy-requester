@@ -2,11 +2,9 @@ package io.github.lookoutldz.easyrequester.requester4j.common
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.util.dataClassInClass
 import io.github.lookoutldz.easyrequester.util.dataClassInTypeReference
 import io.github.lookoutldz.easyrequester.util.getEffectiveObjectMapper
-import io.github.lookoutldz.easyrequester.util.isKotlinModuleRegistered
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -17,7 +15,7 @@ import okhttp3.Response
  * @author looko
  * @date 2025/6/6
  */
-abstract class AbstractEasyHttp4j<T> internal constructor(
+abstract class AbstractEasyHttp4j internal constructor(
     protected val url: String,
     protected val params: Map<String, String>?,
     protected val headers: Map<String, String>?,
@@ -116,10 +114,10 @@ abstract class AbstractEasyHttp4j<T> internal constructor(
         }
 
         private fun getSpecifiedObjectMapper(): ObjectMapper {
-            getEffectiveObjectMapper(dataClassInClass(clazz) || dataClassInTypeReference(typeReference))
+            return getEffectiveObjectMapper(dataClassInClass(clazz) || dataClassInTypeReference(typeReference))
         }
 
-        abstract fun build(): AbstractEasyHttp4j<T>
+        abstract fun build(): AbstractEasyHttp4j
 
         protected fun getDefaultResponseHandler(): ResponseHandler {
             return object : ResponseHandler {

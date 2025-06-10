@@ -1,12 +1,8 @@
 package io.github.lookoutldz.easyrequester.requester4j
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import io.github.lookoutldz.easyrequester.requester4j.EasyHttpPost4j.Builder
 import io.github.lookoutldz.easyrequester.requester4j.common.*
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 
 /**
  * Java友好版本的DELETE请求类
@@ -21,7 +17,7 @@ class EasyHttpDelete4j<T> private constructor(
     okHttpClient: OkHttpClient,
     responseHandler: ResponseHandler?,
     exceptionHandler: ExceptionHandler?
-) : AbstractEasyHttp4j<T>(
+) : AbstractEasyHttp4j(
     url = url,
     params = params,
     headers = headers,

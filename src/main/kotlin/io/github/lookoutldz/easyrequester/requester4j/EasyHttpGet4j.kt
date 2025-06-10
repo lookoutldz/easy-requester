@@ -17,7 +17,7 @@ class EasyHttpGet4j<T> private constructor(
     okHttpClient: OkHttpClient,
     responseHandler: ResponseHandler?,
     exceptionHandler: ExceptionHandler?
-) : AbstractEasyHttp4j<T>(
+) : AbstractEasyHttp4j(
     url = url,
     params = params,
     headers = headers,

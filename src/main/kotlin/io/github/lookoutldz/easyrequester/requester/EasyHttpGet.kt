@@ -22,7 +22,7 @@ class EasyHttpGet<T> private constructor(
     okHttpClient: OkHttpClient,
     responseHandler: (Response) -> Unit,
     exceptionHandler: (Throwable, Request) -> Unit
-): AbstractEasyHttp<T>(
+): AbstractEasyHttp(
     url = url,
     params = params,
     headers = headers,

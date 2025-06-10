@@ -26,7 +26,7 @@ class EasyHttpPut<T> private constructor(
     exceptionHandler: (Throwable, Request) -> Unit,
     private val body: Any? = null,
     private val contentType: String = "application/json",
-): AbstractEasyHttp<T>(
+): AbstractEasyHttp(
     url = url,
     params = params,
     headers = headers,
