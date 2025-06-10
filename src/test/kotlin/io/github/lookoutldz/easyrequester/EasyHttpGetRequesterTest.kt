@@ -28,7 +28,14 @@ class EasyHttpGetRequesterTest {
         // 测试最简单的默认请求方式
         EasyHttpGet.doRequestDefault(url = userUrl) {
             // it is default to string
-            println("01. ok - $it")
+            println("ok - $it")
+        }
+    }
+
+    @Test
+    fun testDoRequestDefault2() {
+        EasyHttpGet.doRequestDefault(url = userUrl, headers = headers) {
+            println("ok - $it")
         }
     }
 
@@ -36,7 +43,7 @@ class EasyHttpGetRequesterTest {
     fun testDoRequestWithType() {
         // 测试指定返回类型的请求
         EasyHttpGet.doRequest<ResponseBody<*>>(url = userUrl) { responseBody ->
-            println("02. ok - ${responseBody?.data}")
+            println("ok - ${responseBody?.data}")
         }
     }
 
@@ -51,7 +58,7 @@ class EasyHttpGetRequesterTest {
             okHttpClient = OkHttpClient(),
             objectMapper = ObjectMapper().registerKotlinModule(),
         ) { responseBody ->
-            println("03. ok - ${responseBody?.data}")
+            println("ok - ${responseBody?.data}")
         }
     }
 
@@ -62,10 +69,10 @@ class EasyHttpGetRequesterTest {
             url = fullUrl,
             objectMapper = ObjectMapper(),  // Exception here: this is not the correct ObjectMapper for Kotlin Data Class
             exceptionHandler = { throwable: Throwable?, request: Request ->
-                println("04. My ExceptionHandler - [${request.method}]${request.url} cause ${throwable?.message}")
+                println("My ExceptionHandler - [${request.method}]${request.url} cause ${throwable?.message}")
             }
         ) { responseBody ->
-            println("04. ok - ${responseBody?.data}")
+            println("ok - ${responseBody?.data}")
         }
     }
 
@@ -73,7 +80,7 @@ class EasyHttpGetRequesterTest {
     fun testDoRequestRaw() {
         // 测试处理原始响应
         EasyHttpGet.doRequestRaw(url = fullUrl) { response ->
-            println("05. ok - ${response.isSuccessful} - ${response.code} - ${response.message}")
+            println("ok - ${response.isSuccessful} - ${response.code} - ${response.message}")
         }
     }
 
@@ -88,10 +95,10 @@ class EasyHttpGetRequesterTest {
             .setOkHttpClient(OkHttpClient())
             .setObjectMapper(ObjectMapper().registerKotlinModule())
             .onSuccess { responseBody ->
-                println("06. ok - ${responseBody?.data}")
+                println("ok - ${responseBody?.data}")
             }
             .onException { throwable: Throwable?, request: Request ->
-                println("06. My ExceptionHandler - [${request.method}]${request.url} cause ${throwable?.message}")
+                println("My ExceptionHandler - [${request.method}]${request.url} cause ${throwable?.message}")
             }
             .build()
             .execute()  // don't forget to execute
@@ -103,9 +110,8 @@ class EasyHttpGetRequesterTest {
         EasyHttpGet
             .Builder(object : TypeReference<ResponseBody<User>>() {})
             .setUrl(userUrl)
-            .setObjectMapper(ObjectMapper().registerKotlinModule())
             .onSuccess { responseBody ->
-                println("07. ok - ${responseBody?.data?.name}")
+                println("ok - ${responseBody?.data?.name}")
             }
             .build()
             .execute()
