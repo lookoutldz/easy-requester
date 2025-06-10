@@ -2,6 +2,7 @@ package io.github.lookoutldz.easyrequester.util
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
@@ -253,4 +254,18 @@ internal fun dataClassInClass(clazz: Class<*>?): Boolean {
 internal fun dataClassInKClass(kClass: KClass<*>?): Boolean {
     if (kClass == null) return false
     return containsDataClassDeep(kClass.java)
+}
+
+/**
+ * 共享线程安全的 ObjectMapper
+ */
+internal val defaultObjectMapper = ObjectMapper()
+internal val kotlinObjectMapper = ObjectMapper().registerKotlinModule()
+
+internal fun getEffectiveObjectMapper(isKotlinData: Boolean): ObjectMapper {
+    return if (isKotlinData) {
+        kotlinObjectMapper
+    } else {
+        defaultObjectMapper
+    }
 }

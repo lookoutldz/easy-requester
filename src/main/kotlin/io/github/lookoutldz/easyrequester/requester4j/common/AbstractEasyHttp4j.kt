@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.util.dataClassInClass
 import io.github.lookoutldz.easyrequester.util.dataClassInTypeReference
+import io.github.lookoutldz.easyrequester.util.getEffectiveObjectMapper
 import io.github.lookoutldz.easyrequester.util.isKotlinModuleRegistered
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -115,11 +116,7 @@ abstract class AbstractEasyHttp4j<T> internal constructor(
         }
 
         private fun getSpecifiedObjectMapper(): ObjectMapper {
-            return if (dataClassInClass(clazz) || dataClassInTypeReference(typeReference)) {
-                objectMapper ?: ObjectMapper().registerKotlinModule()
-            } else {
-                objectMapper ?: ObjectMapper()
-            }
+            getEffectiveObjectMapper(dataClassInClass(clazz) || dataClassInTypeReference(typeReference))
         }
 
         abstract fun build(): AbstractEasyHttp4j<T>
@@ -164,7 +161,9 @@ abstract class AbstractEasyHttp4j<T> internal constructor(
         protected fun getDefaultResponseFailureHandler(): ResponseFailureHandler {
             return object : ResponseFailureHandler {
                 override fun onResponseFailure(response: Response) {
-                    println("${response.code}-${response.message}: ${response.body?.string()}")
+                    // 不读取body内容，避免资源泄漏和重复消费问题
+                    // 如果需要读取body，应该由用户在自定义handler中处理
+                    println("${response.code}-${response.message}: Response failed")
                 }
             }
         }

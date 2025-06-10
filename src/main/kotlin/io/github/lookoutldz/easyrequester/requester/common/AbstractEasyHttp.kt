@@ -2,9 +2,9 @@ package io.github.lookoutldz.easyrequester.requester.common
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.util.dataClassInClass
 import io.github.lookoutldz.easyrequester.util.dataClassInTypeReference
+import io.github.lookoutldz.easyrequester.util.getEffectiveObjectMapper
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -24,23 +24,6 @@ abstract class AbstractEasyHttp<T> internal constructor(
     protected val responseHandler: (Response) -> Unit,
     protected val exceptionHandler: (Throwable, Request) -> Unit
 ) {
-    companion object {
-        // 线程安全的共享ObjectMapper实例
-        private val defaultObjectMapper = ObjectMapper()
-        private val kotlinObjectMapper = ObjectMapper().registerKotlinModule()
-        
-        internal fun getObjectMapper(isKotlinData: Boolean): ObjectMapper {
-            return if (isKotlinData) kotlinObjectMapper else defaultObjectMapper
-        }
-
-        internal fun getEffectiveObjectMapper(isKotlinData: Boolean): ObjectMapper {
-            return if (isKotlinData) {
-                kotlinObjectMapper
-            } else {
-                defaultObjectMapper
-            }
-        }
-    }
     
     abstract class Builder<T>() {
         // 将 private 改为 protected，或者添加 protected getter 方法
@@ -118,8 +101,8 @@ abstract class AbstractEasyHttp<T> internal constructor(
 
         protected fun defaultResponseFailureHandler(response: Response) {
             // 不读取body内容，避免资源泄漏和重复消费问题
-            println("${response.code}-${response.message}: Response failed")
             // 如果需要读取body，应该由用户在自定义handler中处理
+            println("${response.code}-${response.message}: Response failed")
         }
 
         protected fun defaultSuccessHandler(t: T?) {

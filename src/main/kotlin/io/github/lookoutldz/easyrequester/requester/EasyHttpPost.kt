@@ -2,9 +2,9 @@ package io.github.lookoutldz.easyrequester.requester
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.requester.common.AbstractEasyHttp
 import io.github.lookoutldz.easyrequester.util.dataClassInClass
+import io.github.lookoutldz.easyrequester.util.getEffectiveObjectMapper
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
