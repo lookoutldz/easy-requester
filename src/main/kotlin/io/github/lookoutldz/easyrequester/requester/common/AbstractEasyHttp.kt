@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.util.dataClassInClass
 import io.github.lookoutldz.easyrequester.util.dataClassInTypeReference
-import io.github.lookoutldz.easyrequester.util.isKotlinModuleRegistered
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -87,7 +86,6 @@ abstract class AbstractEasyHttp<T> internal constructor(
         protected fun defaultResponseSuccessHandler(response: Response) {
             val t = response.body?.let { body ->
                 val objectMapper = this.objectMapper ?: specifiedObjectMapper
-                println(isKotlinModuleRegistered(objectMapper))
                 if (clazz != null) {
                     if (clazz == String::class.java) {
                         body.string() as T
