@@ -23,7 +23,25 @@ abstract class AbstractEasyHttp<T> internal constructor(
     protected val okHttpClient: OkHttpClient,
     protected val responseHandler: (Response) -> Unit,
     protected val exceptionHandler: (Throwable, Request) -> Unit
-){
+) {
+    companion object {
+        // 线程安全的共享ObjectMapper实例
+        private val defaultObjectMapper = ObjectMapper()
+        private val kotlinObjectMapper = ObjectMapper().registerKotlinModule()
+        
+        internal fun getObjectMapper(isKotlinData: Boolean): ObjectMapper {
+            return if (isKotlinData) kotlinObjectMapper else defaultObjectMapper
+        }
+
+        internal fun getEffectiveObjectMapper(isKotlinData: Boolean): ObjectMapper {
+            return if (isKotlinData) {
+                kotlinObjectMapper
+            } else {
+                defaultObjectMapper
+            }
+        }
+    }
+    
     abstract class Builder<T>() {
         // 将 private 改为 protected，或者添加 protected getter 方法
         protected var okHttpClient: OkHttpClient? = null
@@ -65,11 +83,7 @@ abstract class AbstractEasyHttp<T> internal constructor(
         fun onException(handler: (Throwable, Request) -> Unit): Builder<T> = apply { this.exceptionHandler = handler }
 
         private val specifiedObjectMapper by lazy {
-            if (dataClassInClass(clazz) || dataClassInTypeReference(typeReference)) {
-                return@lazy objectMapper ?: ObjectMapper().registerKotlinModule()
-            } else {
-                return@lazy objectMapper ?: ObjectMapper()
-            }
+            getEffectiveObjectMapper(dataClassInClass(clazz) || dataClassInTypeReference(typeReference))
         }
 
         abstract fun build(): AbstractEasyHttp<T>
@@ -103,7 +117,9 @@ abstract class AbstractEasyHttp<T> internal constructor(
         }
 
         protected fun defaultResponseFailureHandler(response: Response) {
-            println("${response.code}-${response.message}: ${response.body?.string()}")
+            // 不读取body内容，避免资源泄漏和重复消费问题
+            println("${response.code}-${response.message}: Response failed")
+            // 如果需要读取body，应该由用户在自定义handler中处理
         }
 
         protected fun defaultSuccessHandler(t: T?) {
@@ -156,7 +172,7 @@ abstract class AbstractEasyHttp<T> internal constructor(
                 requestBuilder.header(key, value)
             }
         // 若头中没有指定 User-Agent 则使用默认值
-        if (headers?.any { it.key.equals(userAgentKey, true) } == false) {
+        if (headers?.any { it.key.equals(userAgentKey, true) } != true) {
             requestBuilder.addHeader(userAgentKey, userAgentValueDefault)
         }
 

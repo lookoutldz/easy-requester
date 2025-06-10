@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.github.lookoutldz.easyrequester.requester.common.AbstractEasyHttp
+import io.github.lookoutldz.easyrequester.util.dataClassInClass
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -203,11 +204,7 @@ class EasyHttpPost<T> private constructor(
             is okhttp3.RequestBody -> body  // 直接使用传入的 RequestBody（包括 MultipartBody）
             null -> "".toRequestBody(contentType.toMediaType())
             else -> {
-                val objectMapper = ObjectMapper().apply {
-                    if (body::class.java.kotlin.isData) {
-                        registerKotlinModule()
-                    }
-                }
+                val objectMapper = getEffectiveObjectMapper(dataClassInClass(body::class.java))
                 objectMapper.writeValueAsString(body).toRequestBody(contentType.toMediaType())
             }
         }
