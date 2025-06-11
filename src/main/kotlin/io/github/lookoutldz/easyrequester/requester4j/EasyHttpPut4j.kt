@@ -44,7 +44,7 @@ class EasyHttpPut4j<T> private constructor(
             url: String,
             body: Any?,
             contentType: String?,
-            successHandler: SuccessHandler<T>
+            successHandler: SuccessHandler<T?>
         ) =
             Builder(clazz)
                 .setUrl(url)
@@ -60,7 +60,7 @@ class EasyHttpPut4j<T> private constructor(
             url: String,
             body: Any?,
             contentType: String?,
-            successHandler: SuccessHandler<T>,
+            successHandler: SuccessHandler<T?>,
             exceptionHandler: ExceptionHandler
         ) =
             Builder(clazz)
@@ -81,7 +81,7 @@ class EasyHttpPut4j<T> private constructor(
             url: String,
             body: Any?,
             contentType: String?,
-            successHandler: SuccessHandler<T>
+            successHandler: SuccessHandler<T?>
         ) =
             Builder(typeReference)
                 .setUrl(url)
@@ -97,7 +97,7 @@ class EasyHttpPut4j<T> private constructor(
             url: String,
             body: Any?,
             contentType: String?,
-            successHandler: SuccessHandler<T>,
+            successHandler: SuccessHandler<T?>,
             exceptionHandler: ExceptionHandler
         ) =
             Builder(typeReference)
@@ -117,7 +117,7 @@ class EasyHttpPut4j<T> private constructor(
             url: String,
             body: Any?,
             contentType: String?,
-            successHandler: SuccessHandler<String>
+            successHandler: SuccessHandler<String?>
         ) =
             Builder(String::class.java)
                 .setUrl(url)
@@ -132,7 +132,7 @@ class EasyHttpPut4j<T> private constructor(
             url: String,
             body: Any?,
             contentType: String?,
-            successHandler: SuccessHandler<String>,
+            successHandler: SuccessHandler<String?>,
             exceptionHandler: ExceptionHandler
         ) =
             Builder(String::class.java)

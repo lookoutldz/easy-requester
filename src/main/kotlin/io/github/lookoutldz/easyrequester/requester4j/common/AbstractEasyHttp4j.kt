@@ -42,7 +42,7 @@ abstract class AbstractEasyHttp4j internal constructor(
         protected var responseHandler: ResponseHandler? = null
         protected var responseSuccessHandler: ResponseSuccessHandler? = null
         protected var responseFailureHandler: ResponseFailureHandler? = null
-        protected var successHandler: SuccessHandler<T>? = null
+        protected var successHandler: SuccessHandler<T?>? = null
         protected var exceptionHandler: ExceptionHandler? = null
 
         constructor(clazz: Class<T>) { this.clazz = clazz }
@@ -103,7 +103,7 @@ abstract class AbstractEasyHttp4j internal constructor(
             return this
         }
         
-        fun onSuccess(handler: SuccessHandler<T>?): Builder<T> {
+        fun onSuccess(handler: SuccessHandler<T?>?): Builder<T> {
             this.successHandler = handler
             return this
         }
@@ -166,8 +166,8 @@ abstract class AbstractEasyHttp4j internal constructor(
             }
         }
 
-        protected fun getDefaultSuccessHandler(): SuccessHandler<T> {
-            return object : SuccessHandler<T> {
+        protected fun getDefaultSuccessHandler(): SuccessHandler<T?> {
+            return object : SuccessHandler<T?> {
                 override fun onSuccess(result: T?) {
                     println("SUCCESS: ${result.toString()}")
                 }
