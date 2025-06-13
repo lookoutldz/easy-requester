@@ -67,27 +67,18 @@ internal fun isDataClass(dataClass: KClass<*>?): Boolean {
 }
 
 internal fun isKotlinModuleRegistered(objectMapper: ObjectMapper): Boolean {
-    try {
-        // 获取已注册模块的字段
-        val registeredModulesField = ObjectMapper::class.java.getDeclaredField("_registeredModuleTypes")
-        registeredModulesField.isAccessible = true
-
-        // 获取已注册模块的集合，增加空值检查
-        val registeredModules = registeredModulesField.get(objectMapper)
-        if (registeredModules == null) {
-            return false // 如果为null，说明没有注册任何模块
-        }
-
-        if (registeredModules is Set<*>) {
-            // 检查是否包含KotlinModule
-            return registeredModules.any {
-                it.toString().contains("KotlinModule")
+    return try {
+        // 使用Jackson的公共API获取已注册的模块ID
+        val registeredModuleIds = objectMapper.registeredModuleIds
+        registeredModuleIds.any { moduleId ->
+            if (moduleId is String) {
+                moduleId.contains("KotlinModule")
+            } else {
+                false
             }
         }
-        return false
     } catch (e: Exception) {
-        // 捕获所有可能的异常，包括NoSuchFieldException
-        return false
+        false
     }
 }
 
