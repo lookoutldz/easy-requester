@@ -258,9 +258,10 @@ internal fun dataClassInKClass(kClass: KClass<*>?): Boolean {
 
 /**
  * 共享线程安全的 ObjectMapper
+ * 使用lazy委托确保线程安全的初始化
  */
-internal val defaultObjectMapper = ObjectMapper()
-internal val kotlinObjectMapper = ObjectMapper().registerKotlinModule()
+internal val defaultObjectMapper by lazy { ObjectMapper() }
+internal val kotlinObjectMapper by lazy { ObjectMapper().registerKotlinModule() }
 
 internal fun getEffectiveObjectMapper(isKotlinData: Boolean): ObjectMapper {
     return if (isKotlinData) {
