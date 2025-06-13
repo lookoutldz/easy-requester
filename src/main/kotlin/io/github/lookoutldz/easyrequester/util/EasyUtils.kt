@@ -92,74 +92,66 @@ internal fun isKotlinModuleRegistered(objectMapper: ObjectMapper): Boolean {
  * @param currentDepth 当前递归深度
  * @return 如果类型或其任何属性包含 Kotlin data class 则返回 true
  */
+/**
+ * 改进的深度检测方法
+ */
 internal fun containsDataClassDeep(
     type: Type,
-    visitedTypes: MutableSet<Type> = mutableSetOf(),
+    visitedTypes: MutableSet<String> = mutableSetOf(), // 使用字符串避免Type对象内存问题
     maxDepth: Int = 10,
     currentDepth: Int = 0
 ): Boolean {
+
     // 防止无限递归
-    if (currentDepth >= maxDepth || type in visitedTypes) {
+    val typeKey = type.toString()
+    if (currentDepth >= maxDepth || typeKey in visitedTypes) {
         return false
     }
+
+    visitedTypes.add(typeKey)
     
-    visitedTypes.add(type)
-    
-    try {
+    return try {
         when (type) {
             is Class<*> -> {
                 // 检查当前类型是否是 data class
                 if (isDataClass(type)) {
-                    return true
+                    true
+                } else {
+                    // 递归检查类的所有属性
+                    checkClassPropertiesDeep(type, visitedTypes, maxDepth, currentDepth + 1)
                 }
-                
-                // 递归检查类的所有属性
-                return checkClassPropertiesDeep(type, visitedTypes, maxDepth, currentDepth + 1)
             }
             
             is ParameterizedType -> {
                 // 检查原始类型
                 val rawType = type.rawType
                 if (rawType is Class<*> && isDataClass(rawType)) {
-                    return true
-                }
-                
-                // 检查泛型参数
-                for (typeArg in type.actualTypeArguments) {
-                    if (containsDataClassDeep(typeArg, visitedTypes, maxDepth, currentDepth + 1)) {
-                        return true
-                    }
-                }
-                
-                // 递归检查原始类型的属性
-                if (rawType is Class<*>) {
-                    return checkClassPropertiesDeep(rawType, visitedTypes, maxDepth, currentDepth + 1)
+                    true
+                } else {
+                    // 检查泛型参数
+                    type.actualTypeArguments.any { typeArg ->
+                        containsDataClassDeep(typeArg, visitedTypes, maxDepth, currentDepth + 1)
+                    } || (rawType is Class<*> && checkClassPropertiesDeep(rawType, visitedTypes, maxDepth, currentDepth + 1))
                 }
             }
             
             is WildcardType -> {
-                // 检查通配符类型的上界
-                for (upperBound in type.upperBounds) {
-                    if (containsDataClassDeep(upperBound, visitedTypes, maxDepth, currentDepth + 1)) {
-                        return true
-                    }
-                }
-                
-                // 检查通配符类型的下界
-                for (lowerBound in type.lowerBounds) {
-                    if (containsDataClassDeep(lowerBound, visitedTypes, maxDepth, currentDepth + 1)) {
-                        return true
-                    }
+                // 检查通配符类型的边界
+                type.upperBounds.any { upperBound ->
+                    containsDataClassDeep(upperBound, visitedTypes, maxDepth, currentDepth + 1)
+                } || type.lowerBounds.any { lowerBound ->
+                    containsDataClassDeep(lowerBound, visitedTypes, maxDepth, currentDepth + 1)
                 }
             }
+            
+            else -> false
         }
     } catch (e: Exception) {
-        // 忽略反射异常，继续检查其他类型
+        // 记录异常但不抛出，继续处理
+        false
     } finally {
-        visitedTypes.remove(type)
+        visitedTypes.remove(typeKey)
     }
-    
-    return false
 }
 
 /**
@@ -167,7 +159,7 @@ internal fun containsDataClassDeep(
  */
 private fun checkClassPropertiesDeep(
     clazz: Class<*>,
-    visitedTypes: MutableSet<Type>,
+    visitedTypes: MutableSet<String>,
     maxDepth: Int,
     currentDepth: Int
 ): Boolean {
