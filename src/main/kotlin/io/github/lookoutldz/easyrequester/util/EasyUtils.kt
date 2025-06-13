@@ -164,10 +164,8 @@ private fun checkClassPropertiesDeep(
     currentDepth: Int
 ): Boolean {
     try {
-        // 跳过基本类型和常见的系统类型
-        if (clazz.isPrimitive || 
-            clazz.packageName.startsWith("java.") == true ||
-            clazz.packageName.startsWith("kotlin.") == true) {
+        // 改进的包名检查
+        if (clazz.isPrimitive || isSystemClass(clazz)) {
             return false
         }
         
@@ -182,6 +180,7 @@ private fun checkClassPropertiesDeep(
                 }
             } catch (e: Exception) {
                 // 忽略单个属性的异常，继续检查其他属性
+                continue
             }
         }
         
@@ -192,7 +191,7 @@ private fun checkClassPropertiesDeep(
                     return true
                 }
             } catch (e: Exception) {
-                // 忽略单个字段的异常
+                continue
             }
         }
     } catch (e: Exception) {
@@ -200,6 +199,20 @@ private fun checkClassPropertiesDeep(
     }
     
     return false
+}
+
+/**
+ * 检查是否为系统类
+ */
+private fun isSystemClass(clazz: Class<*>): Boolean {
+    val packageName = clazz.packageName
+    return packageName?.let { pkg ->
+        pkg.startsWith("java.") || 
+        pkg.startsWith("kotlin.") || 
+        pkg.startsWith("javax.") ||
+        pkg.startsWith("sun.") ||
+        pkg.startsWith("com.sun.")
+    } ?: false
 }
 
 /**
