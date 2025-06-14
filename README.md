@@ -2,7 +2,18 @@
 
 # Easy Requester
 
-Easy Requester is a lightweight Kotlin HTTP client library built on OkHttp, providing a simple and easy-to-use API for sending HTTP requests.
+Easy Requester is a lightweight Java/Kotlin HTTP client library built on OkHttp3, providing a simple and easy-to-use API for sending HTTP requests.
+
+---
+<div align="center">
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.lookoutldz/easy-requester.svg)](https://central.sonatype.com/artifact/io.github.lookoutldz/easy-requester)
+[![GitHub](https://img.shields.io/github/license/lookoutldz/easy-requester.svg)](https://github.com/lookoutldz/easy-requester/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/lookoutldz/easy-requester.svg?style=social)](https://github.com/lookoutldz/easy-requester)
+
+</div>
+
+---
 
 ## Features
 
