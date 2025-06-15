@@ -1,6 +1,7 @@
 package io.github.lookoutldz.easyrequester.requester.common
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.lookoutldz.easyrequester.entity.HttpMethod
 import io.github.lookoutldz.easyrequester.requester.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -123,11 +124,4 @@ object EasyHttpRequestHelper {
         responseHandler = responseHandler,
     )
 
-}
-
-/**
- * HTTP方法枚举
- */
-enum class HttpMethod {
-    GET, POST, PUT, DELETE
 }

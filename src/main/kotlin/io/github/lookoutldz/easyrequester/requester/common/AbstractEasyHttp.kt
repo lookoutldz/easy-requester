@@ -26,7 +26,6 @@ abstract class AbstractEasyHttp internal constructor(
 ) {
     
     abstract class Builder<T>() {
-        // 将 private 改为 protected，或者添加 protected getter 方法
         protected var okHttpClient: OkHttpClient? = null
         protected var objectMapper: ObjectMapper? = null
         

@@ -1,4 +1,4 @@
-package io.github.lookoutldz.easyrequester.requester4j.common
+package io.github.lookoutldz.easyrequester.entity
 
 /**
  * HTTP方法枚举

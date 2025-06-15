@@ -2,9 +2,9 @@ package io.github.lookoutldz.easyrequester.requester
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.lookoutldz.easyrequester.entity.HttpMethod
 import io.github.lookoutldz.easyrequester.requester.common.AbstractEasyHttp
 import io.github.lookoutldz.easyrequester.requester.common.EasyHttpRequestHelper
-import io.github.lookoutldz.easyrequester.requester.common.HttpMethod
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
