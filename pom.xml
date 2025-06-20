@@ -225,7 +225,10 @@
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.2.7</version>
                 <configuration>
-                    <executable>/usr/local/bin/gpg</executable>
+                    <!--Mac GPG-->
+<!--                    <executable>/usr/local/bin/gpg</executable>-->
+                    <!--Ubuntu GPG-->
+                    <executable>/usr/bin/gpg</executable>
                     <keyname>io.github.lookoutldz</keyname>
                 </configuration>
                 <executions>
