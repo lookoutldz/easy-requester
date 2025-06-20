@@ -47,18 +47,18 @@ Its design philosophy is: Elegant, Elegant, and damn Elegant!
 <dependency>
     <groupId>io.github.lookoutldz</groupId>
     <artifactId>easy-requester</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
 </dependency>
 ```
 
 #### Gradle
 Groovy by ``build.gradle``
 ```groovy
-implementation 'io.github.lookoutldz:easy-requester:2.3.1'
+implementation 'io.github.lookoutldz:easy-requester:2.3.2'
 ```
 Kotlin DSL by ``build.gradle.kts``
 ```kotlin
-implementation("io.github.lookoutldz:easy-requester:2.3.1")
+implementation("io.github.lookoutldz:easy-requester:2.3.2")
 ```
 
 ### 🎯 Master Core Usage in 1 Minute

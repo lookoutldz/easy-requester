@@ -65,6 +65,7 @@ jobs:
 
     - name: Publish to GitHub Packages
       run: |
+        cat ~/.m2/settings.xml
         mvn -B -DskipTests clean deploy -P github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
