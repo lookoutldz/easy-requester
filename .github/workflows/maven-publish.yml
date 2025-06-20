@@ -39,7 +39,7 @@ jobs:
         # -P activate profile
         # mvn -U -B -DskipTests clean deploy -P release
         cat ~/.m2/settings.xml
-        mvn -U -B -DskipTests clean deploy 
+        mvn -B -DskipTests clean deploy
       env:
         SIGN_KEY_PASS: ${{ secrets.GPG_PASSPHRASE }}
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
