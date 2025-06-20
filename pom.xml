@@ -169,80 +169,7 @@
                 </configuration>
             </plugin>
 
-            <!--   central发布插件    -->
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.7.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <!-- publishingServerId 是在 settings.xml中配置的 server 认证信息 -->
-                    <publishingServerId>lookoutldz</publishingServerId>
-                    <!-- autoPublish 是自动发布，而不是手动发布, 手动发布需要登录 https://central.sonatype.com 后切换到Deployment -->
-                    <autoPublish>true</autoPublish>
-                    <!-- waitUntil 配置为 published 是等待发布完成，因为发布完成的时间比较长，所以可以不加这个参数 -->
-                    <waitUntil>published</waitUntil>
-                    <!-- deploymentName 是发布到中央仓库的名称 -->
-                    <deploymentName>${project.groupId}:${project.artifactId}:${project.version}</deploymentName>
-                </configuration>
-            </plugin>
-
-            <!--   source源码插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--   javadoc插件 -->
-            <plugin>
-                <groupId>org.jetbrains.dokka</groupId>
-                <artifactId>dokka-maven-plugin</artifactId>
-                <version>1.9.20</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>javadocJar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <sourceDirectories>
-                        <dir>${project.basedir}/src/main/kotlin</dir>
-                    </sourceDirectories>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.7</version>
-                <configuration>
-                    <!--Mac GPG-->
-<!--                    <executable>/usr/local/bin/gpg</executable>-->
-                    <!--Ubuntu GPG-->
-                    <executable>/usr/bin/gpg</executable>
-                    <keyname>io.github.lookoutldz</keyname>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Java编译器 - 在Kotlin之后执行 -->
+            <!-- Java 编译器，执行 Java Test 所需 - 在 Kotlin 之后执行 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -279,5 +206,141 @@
 
         </plugins>
     </build>
+
+    <profiles>
+
+        <!-- Maven Central profile -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!--   central发布插件    -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- publishingServerId 是在 settings.xml中配置的 server 认证信息 -->
+                            <publishingServerId>lookoutldz</publishingServerId>
+                            <!-- autoPublish 是自动发布，而不是手动发布, 手动发布需要登录 https://central.sonatype.com 后切换到Deployment -->
+                            <autoPublish>true</autoPublish>
+                            <!-- waitUntil 配置为 published 是等待发布完成，因为发布完成的时间比较长，所以可以不加这个参数 -->
+                            <waitUntil>published</waitUntil>
+                            <!-- deploymentName 是发布到中央仓库的名称 -->
+                            <deploymentName>${project.groupId}:${project.artifactId}:${project.version}</deploymentName>
+                        </configuration>
+                    </plugin>
+
+                    <!--   source源码插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--   javadoc插件 -->
+                    <plugin>
+                        <groupId>org.jetbrains.dokka</groupId>
+                        <artifactId>dokka-maven-plugin</artifactId>
+                        <version>1.9.20</version>
+                        <executions>
+                            <execution>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>javadocJar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <sourceDirectories>
+                                <dir>${project.basedir}/src/main/kotlin</dir>
+                            </sourceDirectories>
+                        </configuration>
+                    </plugin>
+                    <!-- GPG 签名插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.7</version>
+                        <configuration>
+                            <!--Mac GPG-->
+                            <!--                    <executable>/usr/local/bin/gpg</executable>-->
+                            <!--Ubuntu GPG-->
+                            <executable>/usr/bin/gpg</executable>
+                            <keyname>io.github.lookoutldz</keyname>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- GitHub Packages profile -->
+        <profile>
+            <id>github</id>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/lookoutldz/easy-requester</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <!-- 源码插件 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Javadoc 插件 -->
+                    <plugin>
+                        <groupId>org.jetbrains.dokka</groupId>
+                        <artifactId>dokka-maven-plugin</artifactId>
+                        <version>1.9.20</version>
+                        <executions>
+                            <execution>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>javadocJar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <sourceDirectories>
+                                <dir>${project.basedir}/src/main/kotlin</dir>
+                            </sourceDirectories>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 
 </project>
