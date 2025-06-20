@@ -36,7 +36,7 @@ Add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>io.github.lookoutldz</groupId>
     <artifactId>easy-requester</artifactId>
-    <version>2.3</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 
@@ -45,13 +45,13 @@ Add the following dependency to your `pom.xml` file:
 Add the following dependency to your `build.gradle` file:
 
 ```groovy
-implementation 'io.github.lookoutldz:easy-requester:2.3'
+implementation 'io.github.lookoutldz:easy-requester:2.3.1'
 ```
 
 Or add the following dependency to your `build.gradle.kts` file if you are using Kotlin DSL:
 
 ```kotlin
-implementation("io.github.lookoutldz:easy-requester:2.3")
+implementation("io.github.lookoutldz:easy-requester:2.3.1")
 ```
 
 ## Quick Start

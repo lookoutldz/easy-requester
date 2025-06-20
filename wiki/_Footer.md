@@ -20,7 +20,7 @@
 <dependency>
     <groupId>io.github.lookoutldz</groupId>
     <artifactId>easy-requester</artifactId>
-    <version>2.3</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 

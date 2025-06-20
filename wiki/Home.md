@@ -47,18 +47,18 @@ Easy Requester 是一个专为 Java / Kotlin 开发者设计的轻量级 HTTP �
 <dependency>
     <groupId>io.github.lookoutldz</groupId>
     <artifactId>easy-requester</artifactId>
-    <version>2.3</version>
+    <version>2.3.1</version>
 </dependency>
 ```
 
 #### Gradle
 Groovy by ``build.gradle``
 ```groovy
-implementation 'io.github.lookoutldz:easy-requester:2.3'
+implementation 'io.github.lookoutldz:easy-requester:2.3.1'
 ```
 Kotlin DSL by ``build.gradle.kts``
 ```kotlin
-implementation("io.github.lookoutldz:easy-requester:2.3")
+implementation("io.github.lookoutldz:easy-requester:2.3.1")
 ```
 
 ### 🎯 1分钟掌握核心用法
