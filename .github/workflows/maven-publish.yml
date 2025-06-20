@@ -38,6 +38,7 @@ jobs:
         # -B Batch mode (do not ask for user input), just in case
         # -P activate profile
         # mvn -U -B -DskipTests clean deploy -P release
+        cat ~/.m2/settings.xml
         mvn -U -B -DskipTests clean deploy 
       env:
         SIGN_KEY_PASS: ${{ secrets.GPG_PASSPHRASE }}
