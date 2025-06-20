@@ -38,7 +38,6 @@ jobs:
         # -B Batch mode (do not ask for user input), just in case
         # -P activate profile
         # mvn -U -B -DskipTests clean deploy -P release
-        cat ~/.m2/settings.xml
         mvn -B -DskipTests clean deploy -P release
       env:
         SIGN_KEY_PASS: ${{ secrets.GPG_PASSPHRASE }}
@@ -47,6 +46,9 @@ jobs:
 
   publish-github:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
     - uses: actions/checkout@v4
 
@@ -57,15 +59,10 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         check-latest: true
-        # 以下配置用于 GitHub Packages 认证
-        server-id: github
-        server-username: ${{ github.actor }}
-        server-password: ${{ secrets.GITHUB_TOKEN }}
         cache: maven
 
     - name: Publish to GitHub Packages
       run: |
-        cat ~/.m2/settings.xml
         mvn -B -DskipTests clean deploy -P github
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
