@@ -34,3 +34,4 @@ build/
 ### Mac OS ###
 .DS_Store
 /DEV.md
+/.idea/

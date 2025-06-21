@@ -2,6 +2,8 @@ package io.github.lookoutldz.easyrequester.util
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
@@ -257,7 +259,21 @@ internal fun dataClassInKClass(kClass: KClass<*>?): Boolean {
  * 使用lazy委托确保线程安全的初始化
  */
 internal val defaultObjectMapper by lazy { ObjectMapper() }
-internal val kotlinObjectMapper by lazy { ObjectMapper().registerKotlinModule() }
+internal val kotlinObjectMapper by lazy {
+    ObjectMapper()
+        // Kotlin支持
+        .registerKotlinModule()
+        // Java时间模块支持
+        .registerModule(JavaTimeModule())
+        // 日期序列化格式
+        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        // 添加以下配置以提高稳定性，忽略JSON中存在但Java对象中不存在的属性，避免因未知属性导致的反序列化失败
+        .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        // 允许非引号字段名，增加解析灵活性
+        .configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+        // 允许单引号，增加解析灵活性
+        .configure(com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
+}
 
 internal fun getEffectiveObjectMapper(isKotlinData: Boolean): ObjectMapper {
     return if (isKotlinData) {
